@@ -1,77 +1,303 @@
+/* =========================================
+   ELEMENT
+========================================= */
+
 const button = document.getElementById("openButton");
 const message = document.getElementById("message");
 const hearts = document.getElementById("hearts");
+const opening = document.getElementById("opening");
 
-button.addEventListener("click", function () {
 
-    message.classList.remove("hidden");
+/* =========================================
+   OPENING CINEMATIC
+========================================= */
 
-    button.style.display = "none";
+window.addEventListener("load", () => {
 
-    createHeartExplosion();
+    // Pastikan opening berada di depan
+    if (opening) {
+        opening.style.display = "flex";
+    }
 
 });
 
 
+/* =========================================
+   CREATE STARS
+========================================= */
+
+function createStars() {
+
+    const starsContainer =
+        document.querySelector(".stars");
+
+    if (!starsContainer) return;
+
+    // Bersihkan bintang lama
+    starsContainer.innerHTML = "";
+
+    for (let i = 0; i < 70; i++) {
+
+        const star =
+            document.createElement("div");
+
+        star.className = "star";
+
+        star.style.left =
+            Math.random() * 100 + "vw";
+
+        star.style.top =
+            Math.random() * 100 + "vh";
+
+        star.style.animationDelay =
+            Math.random() * 3 + "s";
+
+        star.style.animationDuration =
+            (1.5 + Math.random() * 3) + "s";
+
+        starsContainer.appendChild(star);
+    }
+}
+
+
+/* =========================================
+   OPEN MESSAGE
+========================================= */
+
+if (button) {
+
+    button.addEventListener("click", () => {
+
+        // Tampilkan pesan
+        if (message) {
+            message.classList.remove("hidden");
+        }
+
+        // Hilangkan tombol
+        button.style.display = "none";
+
+        // Efek ledakan hati
+        createHeartExplosion();
+
+        // Tambahkan lebih banyak hati
+        createExtraHearts();
+
+    });
+
+}
+
+
+/* =========================================
+   HEART EXPLOSION
+========================================= */
+
 function createHeartExplosion() {
 
-    for (let i = 0; i < 25; i++) {
+    const heartTypes = [
+        "❤️",
+        "💗",
+        "💖",
+        "💕",
+        "💓",
+        "💞",
+        "💘"
+    ];
+
+    for (let i = 0; i < 60; i++) {
 
         setTimeout(() => {
 
-            const heart = document.createElement("div");
+            const heart =
+                document.createElement("div");
 
-            heart.className = "floating-heart";
+            heart.className =
+                "explosion-heart";
 
-            heart.innerHTML = Math.random() > 0.5
-                ? "❤️"
-                : "💗";
+            heart.innerHTML =
+                heartTypes[
+                    Math.floor(
+                        Math.random() *
+                        heartTypes.length
+                    )
+                ];
 
-            heart.style.left =
-                Math.random() * 100 + "vw";
 
+            // Arah ledakan
+            const angle =
+                Math.random() *
+                Math.PI * 2;
+
+            const distance =
+                150 +
+                Math.random() * 400;
+
+
+            const x =
+                Math.cos(angle) *
+                distance;
+
+            const y =
+                Math.sin(angle) *
+                distance;
+
+
+            heart.style.setProperty(
+                "--x",
+                x + "px"
+            );
+
+            heart.style.setProperty(
+                "--y",
+                y + "px"
+            );
+
+
+            // Ukuran random
             heart.style.fontSize =
-                (15 + Math.random() * 25) + "px";
+                (14 + Math.random() * 25)
+                + "px";
 
-            heart.style.animationDuration =
-                (4 + Math.random() * 5) + "s";
 
-            hearts.appendChild(heart);
+            // Rotasi random
+            heart.style.transform =
+                `rotate(${Math.random() * 360}deg)`;
 
+
+            document.body.appendChild(
+                heart
+            );
+
+
+            // Hapus setelah animasi
             setTimeout(() => {
-                heart.remove();
-            }, 9000);
 
-        }, i * 100);
+                heart.remove();
+
+            }, 2200);
+
+
+        }, i * 25);
+
+    }
+}
+
+
+/* =========================================
+   FLOATING HEART
+========================================= */
+
+function createFloatingHeart() {
+
+    if (!hearts) return;
+
+    const heart =
+        document.createElement("div");
+
+    heart.className =
+        "floating-heart";
+
+
+    const heartTypes = [
+        "❤️",
+        "💗",
+        "💖",
+        "💕",
+        "💓",
+        "💞"
+    ];
+
+
+    heart.innerHTML =
+        heartTypes[
+            Math.floor(
+                Math.random() *
+                heartTypes.length
+            )
+        ];
+
+
+    // Posisi horizontal random
+    heart.style.left =
+        Math.random() * 100 + "vw";
+
+
+    // Ukuran random
+    heart.style.fontSize =
+        (12 + Math.random() * 28)
+        + "px";
+
+
+    // Kecepatan random
+    heart.style.animationDuration =
+        (5 + Math.random() * 6)
+        + "s";
+
+
+    // Delay random
+    heart.style.animationDelay =
+        Math.random() + "s";
+
+
+    hearts.appendChild(heart);
+
+
+    // Hapus agar halaman tidak berat
+    setTimeout(() => {
+
+        heart.remove();
+
+    }, 13000);
+
+}
+
+
+/* =========================================
+   EXTRA HEARTS
+========================================= */
+
+function createExtraHearts() {
+
+    for (let i = 0; i < 20; i++) {
+
+        setTimeout(() => {
+
+            createFloatingHeart();
+
+        }, i * 120);
 
     }
 
 }
 
 
-// Hati terus berjalan di background
+/* =========================================
+   NORMAL FLOATING HEARTS
+========================================= */
 
 setInterval(() => {
 
-    const heart = document.createElement("div");
+    createFloatingHeart();
 
-    heart.className = "floating-heart";
+}, 500);
 
-    heart.innerHTML = "💗";
 
-    heart.style.left =
-        Math.random() * 100 + "vw";
+/* =========================================
+   INITIAL HEARTS
+========================================= */
 
-    heart.style.fontSize =
-        (12 + Math.random() * 20) + "px";
-
-    heart.style.animationDuration =
-        (5 + Math.random() * 5) + "s";
-
-    hearts.appendChild(heart);
+for (let i = 0; i < 12; i++) {
 
     setTimeout(() => {
-        heart.remove();
-    }, 10000);
 
-}, 700);
+        createFloatingHeart();
+
+    }, i * 300);
+
+}
+
+
+/* =========================================
+   CREATE STARS
+========================================= */
+
+createStars();

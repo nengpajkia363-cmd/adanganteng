@@ -11,19 +11,15 @@
 
     <title>Untuk Kamu ❤️</title>
 
-    <!-- Versi file supaya browser tidak memakai cache lama -->
     <link
         rel="stylesheet"
-        href="style.css?v=2"
+        href="style.css?v=4"
     >
 </head>
 
 <body>
 
-    <!-- =========================
-         OPENING CINEMATIC
-    ========================== -->
-
+    <!-- OPENING -->
     <div id="opening">
 
         <div class="opening-glow"></div>
@@ -43,11 +39,9 @@
             </h1>
 
             <div class="loading-dots">
-
                 <span></span>
                 <span></span>
                 <span></span>
-
             </div>
 
         </div>
@@ -55,12 +49,8 @@
     </div>
 
 
-    <!-- =========================
-         BACKGROUND
-    ========================== -->
-
+    <!-- BACKGROUND -->
     <div class="light one"></div>
-
     <div class="light two"></div>
 
     <div class="stars"></div>
@@ -68,10 +58,18 @@
     <div id="hearts"></div>
 
 
-    <!-- =========================
-         MAIN CONTENT
-    ========================== -->
+    <!-- MUSIC BUTTON -->
+    <button
+        id="musicButton"
+        class="music-button"
+        aria-label="Mute musik"
+        title="Mute musik"
+    >
+        🔊
+    </button>
 
+
+    <!-- MAIN -->
     <main class="container">
 
         <div class="card">
@@ -80,27 +78,21 @@
                 ❤️
             </div>
 
-
             <h1>
                 Hai, Kamu 💌
             </h1>
-
 
             <p class="subtitle">
                 Aku punya sesuatu yang mau
                 aku sampaikan...
             </p>
 
-
             <button id="openButton">
                 Buka Pesannya 💖
             </button>
 
 
-            <!-- =========================
-                 MESSAGE
-            ========================== -->
-
+            <!-- MESSAGE -->
             <div
                 id="message"
                 class="hidden"
@@ -110,12 +102,10 @@
                     Untuk Kamu 🌷
                 </h2>
 
-
                 <p>
                     Terima kasih sudah menjadi
                     seseorang yang begitu berarti.
                 </p>
-
 
                 <p>
                     Semoga hari kamu selalu
@@ -123,11 +113,9 @@
                     dan senyuman. ✨
                 </p>
 
-
                 <div class="big-heart">
                     ❤️
                 </div>
-
 
                 <p class="closing">
                     — Dari seseorang yang ingin
@@ -141,11 +129,17 @@
     </main>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <!-- MUSIC -->
+    <audio
+        id="backgroundMusic"
+        src="music.mp3"
+        loop
+        preload="auto"
+    ></audio>
 
-    <script src="script.js?v=2"></script>
+
+    <!-- SCRIPT -->
+    <script src="script.js?v=4"></script>
 
 </body>
 

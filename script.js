@@ -1,85 +1,175 @@
-/* =========================================
-   ELEMENT
-========================================= */
-
 const button = document.getElementById("openButton");
 const message = document.getElementById("message");
 const hearts = document.getElementById("hearts");
-const opening = document.getElementById("opening");
+const music = document.getElementById("backgroundMusic");
+const musicButton = document.getElementById("musicButton");
+
+let musicStarted = false;
+let musicMuted = false;
 
 
 /* =========================================
-   OPENING CINEMATIC
+   MUSIK
 ========================================= */
 
-window.addEventListener("load", () => {
+async function startMusic() {
 
-    // Pastikan opening berada di depan
-    if (opening) {
-        opening.style.display = "flex";
+    if (!music) {
+        console.error("Audio element tidak ditemukan.");
+        return;
     }
 
-});
+    try {
 
+        music.volume = 0.35;
+        music.muted = false;
 
-/* =========================================
-   CREATE STARS
-========================================= */
+        await music.play();
 
-function createStars() {
+        musicStarted = true;
+        musicMuted = false;
 
-    const starsContainer =
-        document.querySelector(".stars");
+        updateMusicButton();
 
-    if (!starsContainer) return;
+        console.log("🎵 Musik berhasil diputar!");
 
-    // Bersihkan bintang lama
-    starsContainer.innerHTML = "";
+    } catch (error) {
 
-    for (let i = 0; i < 70; i++) {
+        console.error("❌ Musik gagal diputar:", error);
 
-        const star =
-            document.createElement("div");
-
-        star.className = "star";
-
-        star.style.left =
-            Math.random() * 100 + "vw";
-
-        star.style.top =
-            Math.random() * 100 + "vh";
-
-        star.style.animationDelay =
-            Math.random() * 3 + "s";
-
-        star.style.animationDuration =
-            (1.5 + Math.random() * 3) + "s";
-
-        starsContainer.appendChild(star);
     }
 }
 
 
 /* =========================================
-   OPEN MESSAGE
+   TOMBOL MUSIK
+========================================= */
+
+if (musicButton) {
+
+    musicButton.addEventListener("click", async () => {
+
+        if (!music) {
+            return;
+        }
+
+        if (!musicStarted) {
+
+            await startMusic();
+            return;
+
+        }
+
+        if (music.paused) {
+
+            try {
+
+                await music.play();
+
+                musicMuted = false;
+
+            } catch (error) {
+
+                console.error(
+                    "❌ Gagal melanjutkan musik:",
+                    error
+                );
+
+            }
+
+        } else {
+
+            music.muted = !music.muted;
+
+            musicMuted = music.muted;
+
+        }
+
+        updateMusicButton();
+
+    });
+
+}
+
+
+/* =========================================
+   UPDATE TOMBOL MUSIK
+========================================= */
+
+function updateMusicButton() {
+
+    if (!musicButton) {
+        return;
+    }
+
+    if (!musicStarted) {
+
+        musicButton.innerHTML = "🎵";
+        musicButton.title = "Nyalakan musik";
+        musicButton.setAttribute(
+            "aria-label",
+            "Nyalakan musik"
+        );
+
+        return;
+    }
+
+    if (musicMuted) {
+
+        musicButton.innerHTML = "🔇";
+        musicButton.title = "Nyalakan musik";
+        musicButton.setAttribute(
+            "aria-label",
+            "Nyalakan musik"
+        );
+
+    } else {
+
+        musicButton.innerHTML = "🔊";
+        musicButton.title = "Matikan musik";
+        musicButton.setAttribute(
+            "aria-label",
+            "Matikan musik"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   BUKA PESAN
 ========================================= */
 
 if (button) {
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
 
-        // Tampilkan pesan
+        /*
+         * Musik dijalankan langsung dari
+         * interaksi tombol user.
+         * Ini lebih aman dari blokir autoplay browser.
+         */
+        await startMusic();
+
+
+        /* Tampilkan pesan */
+
         if (message) {
+
             message.classList.remove("hidden");
+
         }
 
-        // Hilangkan tombol
+
+        /* Hilangkan tombol */
+
         button.style.display = "none";
 
-        // Efek ledakan hati
-        createHeartExplosion();
 
-        // Tambahkan lebih banyak hati
+        /* Efek hati */
+
+        createHeartExplosion();
         createExtraHearts();
 
     });
@@ -88,7 +178,7 @@ if (button) {
 
 
 /* =========================================
-   HEART EXPLOSION
+   LEDAKAN HATI
 ========================================= */
 
 function createHeartExplosion() {
@@ -121,25 +211,20 @@ function createHeartExplosion() {
                     )
                 ];
 
-
-            // Arah ledakan
             const angle =
                 Math.random() *
-                Math.PI * 2;
+                Math.PI *
+                2;
 
             const distance =
                 150 +
                 Math.random() * 400;
 
-
             const x =
-                Math.cos(angle) *
-                distance;
+                Math.cos(angle) * distance;
 
             const y =
-                Math.sin(angle) *
-                distance;
-
+                Math.sin(angle) * distance;
 
             heart.style.setProperty(
                 "--x",
@@ -151,51 +236,41 @@ function createHeartExplosion() {
                 y + "px"
             );
 
-
-            // Ukuran random
             heart.style.fontSize =
-                (14 + Math.random() * 25)
-                + "px";
+                14 +
+                Math.random() * 25 +
+                "px";
 
+            document.body.appendChild(heart);
 
-            // Rotasi random
-            heart.style.transform =
-                `rotate(${Math.random() * 360}deg)`;
-
-
-            document.body.appendChild(
-                heart
-            );
-
-
-            // Hapus setelah animasi
             setTimeout(() => {
 
                 heart.remove();
 
             }, 2200);
 
-
         }, i * 25);
 
     }
+
 }
 
 
 /* =========================================
-   FLOATING HEART
+   HATI MELAYANG
 ========================================= */
 
 function createFloatingHeart() {
 
-    if (!hearts) return;
+    if (!hearts) {
+        return;
+    }
 
     const heart =
         document.createElement("div");
 
     heart.className =
         "floating-heart";
-
 
     const heartTypes = [
         "❤️",
@@ -206,7 +281,6 @@ function createFloatingHeart() {
         "💞"
     ];
 
-
     heart.innerHTML =
         heartTypes[
             Math.floor(
@@ -215,33 +289,21 @@ function createFloatingHeart() {
             )
         ];
 
-
-    // Posisi horizontal random
     heart.style.left =
         Math.random() * 100 + "vw";
 
-
-    // Ukuran random
     heart.style.fontSize =
-        (12 + Math.random() * 28)
-        + "px";
+        12 +
+        Math.random() * 28 +
+        "px";
 
-
-    // Kecepatan random
     heart.style.animationDuration =
-        (5 + Math.random() * 6)
-        + "s";
-
-
-    // Delay random
-    heart.style.animationDelay =
-        Math.random() + "s";
-
+        5 +
+        Math.random() * 6 +
+        "s";
 
     hearts.appendChild(heart);
 
-
-    // Hapus agar halaman tidak berat
     setTimeout(() => {
 
         heart.remove();
@@ -252,7 +314,7 @@ function createFloatingHeart() {
 
 
 /* =========================================
-   EXTRA HEARTS
+   HATI TAMBAHAN
 ========================================= */
 
 function createExtraHearts() {
@@ -271,7 +333,7 @@ function createExtraHearts() {
 
 
 /* =========================================
-   NORMAL FLOATING HEARTS
+   HATI NORMAL
 ========================================= */
 
 setInterval(() => {
@@ -282,7 +344,7 @@ setInterval(() => {
 
 
 /* =========================================
-   INITIAL HEARTS
+   HATI AWAL
 ========================================= */
 
 for (let i = 0; i < 12; i++) {
@@ -297,7 +359,86 @@ for (let i = 0; i < 12; i++) {
 
 
 /* =========================================
-   CREATE STARS
+   BINTANG
+========================================= */
+
+function createStars() {
+
+    const starsContainer =
+        document.querySelector(".stars");
+
+    if (!starsContainer) {
+        return;
+    }
+
+    starsContainer.innerHTML = "";
+
+    for (let i = 0; i < 70; i++) {
+
+        const star =
+            document.createElement("div");
+
+        star.className =
+            "star";
+
+        star.style.left =
+            Math.random() * 100 + "vw";
+
+        star.style.top =
+            Math.random() * 100 + "vh";
+
+        star.style.animationDelay =
+            Math.random() * 3 + "s";
+
+        star.style.animationDuration =
+            1.5 +
+            Math.random() * 3 +
+            "s";
+
+        starsContainer.appendChild(star);
+
+    }
+
+}
+
+
+/* =========================================
+   CEK AUDIO
+========================================= */
+
+if (music) {
+
+    music.addEventListener("loadeddata", () => {
+
+        console.log("🎧 music.mp3 berhasil dimuat.");
+
+    });
+
+    music.addEventListener("canplay", () => {
+
+        console.log("▶️ music.mp3 siap dimainkan.");
+
+    });
+
+    music.addEventListener("error", (error) => {
+
+        console.error(
+            "❌ Error audio:",
+            error
+        );
+
+    });
+
+}
+
+
+/* =========================================
+   MULAI
 ========================================= */
 
 createStars();
+
+updateMusicButton();
+
+console.log("🌷 Website siap.");
+console.log("🎵 Audio element:", music);
